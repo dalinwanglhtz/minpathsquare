@@ -1,40 +1,47 @@
 package com.codewardev;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Stack;
 
 // https://www.codewars.com/kata/5845e3f680a8cf0bad00017d/train/java
 
 public class MinPathSquare {
 
-	private static int minPath = -1;
-	private static Stack<GridNode> gridStack = new Stack<GridNode>();
+	private static int minPath;
+	private static Stack<Integer> gridStack;
+	private static Map<Integer, Stack<Integer>> allStacks;
 	
 	public static int minPath(int[][] grid, int x, int y) {
+		minPath = -1;
+		gridStack = new Stack<Integer>();
+		//allStacks = new HashMap<Integer, Stack<Integer>>();
 		GridNode gNode = constructGridNode(grid, 0, 0);
 		traverseGridNode(gNode, y, x);
-		//printStack();
 		System.out.println("MinPath is: "+minPath);
-		return 0;
+		//printStack();
+		return minPath;
 	}
 
 	private static void printStack() {
-		for(int i=0; i<gridStack.size(); i++) {
-			System.out.println("Key: "+gridStack.get(i).getKey()+" and Value: "+gridStack.get(i).getValue());
+		Stack<Integer> minStack = allStacks.get(minPath);
+		Iterator<Integer> iter = minStack.iterator();
+		while(iter.hasNext()) {
+			System.out.println("Integer: "+iter.next());
 		}
 		
 	}
 
 	private static void traverseGridNode(GridNode gNode, int x, int y) {
-		gridStack.add(gNode);
+		gridStack.add(gNode.getValue());
 		if(gNode.getKey().equalsIgnoreCase(x+""+y)) {
-			int totalPath = 0;
-			for(int i=0; i<gridStack.size(); i++) {
-				System.out.println("Key: "+gridStack.get(i).getKey()+" and Value: "+gridStack.get(i).getValue());
-				totalPath += gridStack.get(i).getValue();
-			}
+			int totalPath = gridStack.stream().mapToInt(Integer::valueOf).sum();
 			if(minPath == -1 || minPath > totalPath) {
+				//allStacks.put(totalPath, (Stack<Integer>) gridStack.clone());
 				minPath = totalPath;
 			}
+			gridStack.pop();
 			return;
 		}
 		if(gNode.getRight() != null) traverseGridNode(gNode.getRight(), x, y);
