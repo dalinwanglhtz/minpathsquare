@@ -11,12 +11,11 @@ public class MinPathSquare {
 	public static int minPath(int[][] grid, int x, int y) {
 		minPath = -1;
 		distanceFromBeginning = 0;
-		int[][] newGrid = new int[y+1][x+1];
-		newGrid = formNewGrid(grid, x, y);
-		//printGrid(newGrid);
+		int[][] newGrid = formNewGrid(grid, x, y);
+		printGrid(newGrid);
 		//System.out.println("Start construct");
 		//long current = System.currentTimeMillis();
-		GridNode gNode = constructGridNode(newGrid, 0, 0, x, y);
+		constructGridNode(newGrid, 0, 0, x, y);
 		//System.out.println("end construct in "+(System.currentTimeMillis()-current)+" milliseconds");
 		System.out.println("MinPath is: "+minPath);
 		return minPath;
@@ -45,76 +44,26 @@ public class MinPathSquare {
 	}
 
 
-	private static GridNode constructGridNode(int[][] grid, int i, int j, int x, int y) {
-		GridNode aNode = new GridNode(grid[i][j], i+""+j);
-		distanceFromBeginning += aNode.getValue();
-		aNode.setDistance(distanceFromBeginning);
+	private static void constructGridNode(int[][] grid, int i, int j, int x, int y) {
+		distanceFromBeginning += grid[i][j];
 		if(i == y && j == x) {
-			if(minPath == -1 || minPath > aNode.getDistance()) {
-				minPath = aNode.getDistance();
+			if(minPath == -1 || minPath > distanceFromBeginning) {
+				minPath = distanceFromBeginning;
 			}
+			distanceFromBeginning -= grid[i][j];
+			return;
 		}
 		int rIndex = j+1;
 		int dIndex = i+1;
 		if(rIndex < grid[i].length) {
-			aNode.setRight(constructGridNode(grid, i, rIndex, x, y));
+			constructGridNode(grid, i, rIndex, x, y);
 		}
 		
 		if(dIndex < grid.length) {
-			aNode.setDown(constructGridNode(grid, dIndex, j, x, y));
+			constructGridNode(grid, dIndex, j, x, y);
 		}
 		
-		distanceFromBeginning -= aNode.getValue();
-		return aNode;
+		distanceFromBeginning -= grid[i][j];
 	}
 
-}
-
-
-class GridNode {
-	private int value;
-	private String key;
-	private int distance;
-	private GridNode right;
-	private GridNode down;
-	
-	GridNode(int value, String key){
-		this.value = value;
-		this.key = key;
-	}
-	
-	public int getValue() {
-		return value;
-	}
-	public void setValue(int value) {
-		this.value = value;
-	}
-	public String getKey() {
-		return key;
-	}
-	public void setKey(String key) {
-		this.key = key;
-	}
-	public GridNode getRight() {
-		return right;
-	}
-	public void setRight(GridNode right) {
-		this.right = right;
-	}
-	public GridNode getDown() {
-		return down;
-	}
-	public void setDown(GridNode down) {
-		this.down = down;
-	}
-
-	public int getDistance() {
-		return distance;
-	}
-
-	public void setDistance(int distance) {
-		this.distance = distance;
-	}
-	
-	
 }
