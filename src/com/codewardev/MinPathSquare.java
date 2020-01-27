@@ -15,18 +15,27 @@ public class MinPathSquare {
 	public static int minPath(int[][] grid, int x, int y) {
 		minPath = -1;
 		distanceFromBeginning = 0;
+		shortestI = 0;
+		shortestJ = 0;
 		partialMinPath = -1;
 		finalMinPath = 0;
 		int[][] newGrid = formNewGrid(grid, 0, 0, x, y);
 		printGrid(newGrid);
 		System.out.println("Start construct");
 		long current = System.currentTimeMillis();
-		findPartialMinPath(newGrid, 0, 0);
-		finalMinPath += partialMinPath;
-		partialMinPath = -1;
-		constructGridNode(newGrid, shortestI, shortestJ, x, y);
-		System.out.println("MinPath is: "+minPath);
-		finalMinPath += minPath;
+		
+		while(shortestI != y && shortestJ != x) {
+			findPartialMinPath(newGrid, shortestJ, shortestI);
+			finalMinPath += partialMinPath;
+			partialMinPath = -1;
+			newGrid = formNewGrid(newGrid, shortestI, shortestJ, x, y);
+			printGrid(newGrid);
+		}
+		
+		
+//		constructGridNode(newGrid, shortestJ, shortestI, x, y);
+//		System.out.println("MinPath is: "+minPath);
+//		finalMinPath += minPath;
 		
 		System.out.println("end construct in "+(System.currentTimeMillis()-current)+" milliseconds");
 		System.out.println("finalMinPath is: "+finalMinPath);
@@ -36,19 +45,19 @@ public class MinPathSquare {
 
 	private static void findPartialMinPath(int[][] newGrid, int x, int y) {
 		int j = newGrid.length-1;
-		for(int i=0; i<newGrid.length; i++) {
+		for(int i=x; i<newGrid.length; i++) {
 			constructGridNode(newGrid, x, y, i, j);
 			System.out.print("Minpath: "+minPath+" i:"+i+" j:"+j);
 			if(partialMinPath == -1 || partialMinPath > minPath) {
 				partialMinPath = minPath;
-				shortestI = j;
-				shortestJ = i;
+				shortestI = i;
+				shortestJ = j;
 			}
 			System.out.println(" with value: "+newGrid[i][j]);
 			j--;
 			minPath = -1;
 		}
-		partialMinPath -= newGrid[shortestI][shortestJ];
+		partialMinPath -= newGrid[shortestJ][shortestI];
 		System.out.println("ShortestI: "+shortestI+" ShortestJ: "+shortestJ+" finalMin: "+partialMinPath);
 	}
 
