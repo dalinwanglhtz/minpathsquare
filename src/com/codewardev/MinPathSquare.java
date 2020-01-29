@@ -17,17 +17,48 @@ public class MinPathSquare {
 		distanceFromBeginning = 0;
 		int[][] newGrid = formNewGrid(grid, 0, 0, x, y);
 		
+		System.out.println("Size of map: "+shortestPaths.size());
+		
+		printGrid(grid);
+		
+		if(!shortestPaths.isEmpty() && grid[0][0] != shortestPaths.get("00")) {
+			shortestPaths = new HashMap<String, Integer>();
+		}
+		
 		if(!shortestPaths.containsKey(x+""+y)) {
-			printGrid(newGrid);
-			for(int i=0; i<newGrid.length; i++) {
-				for(int j=0; j<newGrid[i].length; j++) {
-					if(!shortestPaths.containsKey(i+""+j)) {
-						constructGridNode(newGrid, 0, 0, i, j);
-						shortestPaths.put(i+""+j, minPath);
-						//System.out.println("Key: "+i+""+j+" Value: "+minPath);
-						minPath = -1;
-						distanceFromBeginning = 0;
+			for(int i=0; i<grid.length; i++) {
+				for(int j=0; j<grid[i].length; j++) {
+					if(i-1 >= 0 && j-1 < 0) {
+						System.out.println("Coord: "+i+""+j+" left: none up: "+shortestPaths.get((i-1)+""+j)+" value: "+grid[i][j]);
+						minPath = shortestPaths.get((i-1)+""+j) + grid[i][j];
+					} else
+					if(i-1 < 0 && j-1 >= 0) {
+						System.out.println("Coord: "+i+""+j+" left: "+shortestPaths.get(i+""+(j-1))+" up: none value: "+grid[i][j]);
+						minPath = shortestPaths.get(i+""+(j-1)) + grid[i][j];
+					} else
+					if(i-1 >=0 && j-1 >= 0) {
+						if(shortestPaths.get(i+""+(j-1)) < shortestPaths.get((i-1)+""+j)) {
+							System.out.println("Coord: "+i+""+j+" left(less): "+shortestPaths.get(i+""+(j-1))+" up: "+shortestPaths.get((i-1)+""+j)+" value: "+grid[i][j]);
+							minPath = shortestPaths.get(i+""+(j-1)) + grid[i][j];
+						} else {
+							System.out.println("Coord: "+i+""+j+" left: "+shortestPaths.get(i+""+(j-1))+" up(less): "+shortestPaths.get((i-1)+""+j)+" value: "+grid[i][j]);
+							minPath = shortestPaths.get((i-1)+""+j) + grid[i][j];
+						}
+					} else {
+						System.out.println("Coord: "+i+""+j+" left: none up: none value: "+grid[i][j]);
+						minPath = grid[i][j];
 					}
+					
+					shortestPaths.put(i+""+j, minPath);
+					
+					minPath = -1;
+					//if(!shortestPaths.containsKey(i+""+j)) {
+						//constructGridNode(newGrid, 0, 0, i, j);
+					//	shortestPaths.put(i+""+j, minPath);
+						//System.out.println("Key: "+i+""+j+" Value: "+minPath);
+						//minPath = -1;
+						//distanceFromBeginning = 0;
+					//}
 				}
 			}
 		}
